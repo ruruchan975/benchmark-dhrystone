@@ -1,2 +1,2 @@
 # benchmark-dhrystone
-"DHRYSTONE" Benchmark Program by Reinhold P. Weicker
+"DHRYSTONE" Benchmark Program by  Reinhold P. Weicker
