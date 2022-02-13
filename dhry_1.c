@@ -64,6 +64,12 @@ extern long     time();
 extern clock_t	clock();
 #define Too_Small_Time (2*HZ)
 #endif
+#ifdef GETTIMEOFDAY
+	struct timeval	starttime;
+	struct timeval	endtime;
+  #define Too_Small_Time (2)
+                /* Measurements should last at least 2 seconds */
+#endif
 
 long            Begin_Time,
                 End_Time,
@@ -150,7 +156,9 @@ main ()
 #ifdef MSC_CLOCK
   Begin_Time = clock();
 #endif
-
+#ifdef GETTIMEOFDAY
+  gettimeofday(&starttime, NULL);
+#endif
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
 
@@ -200,7 +208,11 @@ main ()
   /**************/
   /* Stop timer */
   /**************/
-  
+#ifdef GETTIMEOFDAY
+  gettimeofday(&endtime, NULL);
+  Begin_Time = starttime.tv_sec * 1000000 + starttime.tv_usec;
+  End_Time = endtime.tv_sec * 1000000 + endtime.tv_usec;
+#endif
 #ifdef TIMES
   times (&time_info);
   End_Time = (long) time_info.tms_utime;
@@ -280,17 +292,24 @@ main ()
                         / (float) Number_Of_Runs;
     Dhrystones_Per_Second = (float) Number_Of_Runs / (float) User_Time;
 #else
+#  ifdef GETTIMEOFDAY
+    Microseconds = (float) User_Time * 1.0
+                        / (((float) Number_Of_Runs));
+    Dhrystones_Per_Second = (float) Number_Of_Runs * 1000000.0
+                        / (float) User_Time;
+#  else
     Microseconds = (float) User_Time * Mic_secs_Per_Second 
                         / ((float) HZ * ((float) Number_Of_Runs));
     Dhrystones_Per_Second = ((float) HZ * (float) Number_Of_Runs)
                         / (float) User_Time;
+#  endif
 #endif
     printf ("Microseconds for one run through Dhrystone: ");
-    //printf ("%6.1f \n", Microseconds);
-    printf ("%d \n", (int)Microseconds);
+    printf ("%6.3f \n", Microseconds);
+    //printf ("%d \n", (int)Microseconds);
     printf ("Dhrystones per Second:                      ");
-    //printf ("%6.1f \n", Dhrystones_Per_Second);
-    printf ("%d \n", (int)Dhrystones_Per_Second);
+    printf ("%6.3f \n", Dhrystones_Per_Second);
+    //printf ("%d \n", (int)Dhrystones_Per_Second);
     printf ("\n");
   }
   

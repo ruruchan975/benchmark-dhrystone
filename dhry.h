@@ -347,8 +347,12 @@
 /* Compiler and system dependent definitions: */
 
 #ifndef TIME
+#  ifdef GETTIMEOFDAY
+#include <sys/time.h>
+#  else
 #undef TIMES
 #define TIMES
+#  endif
 #endif
                 /* Use times(2) time function unless    */
                 /* explicitly defined otherwise         */
