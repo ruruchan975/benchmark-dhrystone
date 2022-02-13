@@ -310,6 +310,11 @@ main ()
     printf ("Dhrystones per Second:                      ");
     printf ("%6.3f \n", Dhrystones_Per_Second);
     //printf ("%d \n", (int)Dhrystones_Per_Second);
+    {
+      float dmips = Dhrystones_Per_Second / 1757.0;
+      printf("DMIPS:                                     ");
+      printf ("%6.3f \n", dmips);
+    }
     printf ("\n");
   }
   
